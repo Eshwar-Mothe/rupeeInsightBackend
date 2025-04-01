@@ -1,0 +1,23 @@
+[
+    {
+        "id": "U12345",
+        "username": "JohnDoe",
+        "email": "johndoe@example.com",
+        "password": "hashed_password_123",
+        "registeredYear": 2022
+    },
+    {
+        "id": "U23456",
+        "username": "JohnDoe",
+        "email": "johndoe@example.com",
+        "password": "hashed_password_123",
+        "registeredYear": 2022
+    },
+    {
+        "id": "U67890",
+        "username": "JaneSmith",
+        "email": "janesmith@example.com",
+        "password": "hashed_password_456",
+        "registeredYear": 2023
+    }
+]

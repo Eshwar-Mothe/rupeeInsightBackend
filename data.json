@@ -1,0 +1,176 @@
+{
+    "users": [
+      {
+        "id": "U12345",
+        "username": "JohnDoe",
+        "email": "johndoe@example.com",
+        "password": "hashed_password_123",
+        "registeredYear": 2022,
+        "financeData": {
+          "currentMonth": "March",
+          "income": {
+            "total": 50000,
+            "previousMonthTotal": 4800,
+            "percentageChange": 4.2
+          },
+          "expenses": {
+            "total": 3200,
+            "previousMonthTotal": 3100,
+            "percentageChange": 3.2
+          },
+          "debts": {
+            "total": 1500,
+            "previousMonthTotal": 1400,
+            "percentageChange": 7.1
+          },
+          "investments": {
+            "total": 800,
+            "previousMonthTotal": 700,
+            "percentageChange": 14.3
+          }
+        },
+        "chartData": {
+          "yearlyData": {
+            "2023": {
+              "income": 60000,
+              "expenses": 38400,
+              "debts": 18000,
+              "investments": 9600
+            },
+            "2024": {
+              "income": 15000,
+              "expenses": 9600,
+              "debts": 4500,
+              "investments": 2400
+            }
+          },
+          "monthlyData": {
+            "January": { "income": 4800, "expenses": 3100, "debts": 1400, "investments": 700 },
+            "February": { "income": 5000, "expenses": 3200, "debts": 1500, "investments": 800 },
+            "March": { "income": 5000, "expenses": 3200, "debts": 1500, "investments": 800 }
+          }
+        },
+        "transactions": [
+          {
+            "id": "T1001",
+            "type": "expense",
+            "category": "Groceries",
+            "amount": 150,
+            "date": "2025-03-20"
+          },
+          {
+            "id": "T1002",
+            "type": "debtRepayment",
+            "category": "Car Loan",
+            "amount": 300,
+            "date": "2025-03-18"
+          },
+          {
+            "id": "T1003",
+            "type": "expense",
+            "category": "Electricity Bill",
+            "amount": 120,
+            "date": "2025-03-17"
+          }
+        ],
+        "reminders": [
+          {
+            "id": "R2001",
+            "title": "Credit Card Payment Due",
+            "date": "2025-03-25"
+          },
+          {
+            "id": "R2002",
+            "title": "Rent Payment",
+            "date": "2025-03-30"
+          }
+        ]
+      },
+      {
+        "id": "U67890",
+        "username": "JaneSmith",
+        "email": "janesmith@example.com",
+        "password": "hashed_password_456",
+        "registeredYear": 2023,
+        "financeData": {
+          "currentMonth": "March",
+          "income": {
+            "total": 6000,
+            "previousMonthTotal": 5800,
+            "percentageChange": 3.4
+          },
+          "expenses": {
+            "total": 3500,
+            "previousMonthTotal": 3300,
+            "percentageChange": 6.1
+          },
+          "debts": {
+            "total": 1200,
+            "previousMonthTotal": 1100,
+            "percentageChange": 9.1
+          },
+          "investments": {
+            "total": 1000,
+            "previousMonthTotal": 900,
+            "percentageChange": 11.1
+          }
+        },
+        "chartData": {
+          "yearlyData": {
+            "2023": {
+              "income": 72000,
+              "expenses": 42000,
+              "debts": 14000,
+              "investments": 12000
+            },
+            "2024": {
+              "income": 18000,
+              "expenses": 10500,
+              "debts": 3500,
+              "investments": 3000
+            }
+          },
+          "monthlyData": {
+            "January": { "income": 5800, "expenses": 3300, "debts": 1100, "investments": 900 },
+            "February": { "income": 6000, "expenses": 3500, "debts": 1200, "investments": 1000 },
+            "March": { "income": 6000, "expenses": 3500, "debts": 1200, "investments": 1000 }
+          }
+        },
+        "transactions": [
+          {
+            "id": "T2001",
+            "type": "expense",
+            "category": "Shopping",
+            "amount": 200,
+            "date": "2025-03-21"
+          },
+          {
+            "id": "T2002",
+            "type": "debtRepayment",
+            "category": "Student Loan",
+            "amount": 400,
+            "date": "2025-03-19"
+          },
+          {
+            "id": "T2003",
+            "type": "expense",
+            "category": "Dining Out",
+            "amount": 90,
+            "date": "2025-03-16"
+          }
+        ],
+        "reminders": [
+          {
+            "id": "R3001",
+            "title": "Car EMI Payment",
+            "date": "2025-04-05"
+          },
+          {
+            "id": "R3002",
+            "title": "Health Insurance Renewal",
+            "date": "2025-04-10"
+          }
+        ]
+      }
+    ]
+  }
