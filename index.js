@@ -164,9 +164,10 @@ app.post('/loan', async (req, res) => {
 
 // Get Methods
 
-app.get('/home', (req, res) => {
+app.get('/home', async (req, res) => {
     try {
-
+        const users = await User.find();
+        res.status(200).json(users);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message, message: 'Error in fetching UserData' });
