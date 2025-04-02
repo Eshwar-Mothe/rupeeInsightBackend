@@ -7,41 +7,36 @@ app.use(express.json())
 
 const saltRounds = 10;
 
-// Controller function to handle user registration
+
 const addUser = async (req, res) => {
     try {
         console.log("Received Data:", req.body);
-        console.log("Received File:", req.file); 
+        console.log("Received File:", req.file);
 
         const { email, password, username, income, mobile, gender, dob, address, city, state, pincode, jobTitle, debt, savings } = req.body;
 
-        // Validate required fields
         if (!email || !password || !username || !income || !mobile || !gender || !dob || !address || !city || !state || !pincode || !jobTitle) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        // Check if the user already exists
         const isUserExist = await User.findOne({ email });
         console.log(isUserExist)
         if (isUserExist) {
             return res.status(400).json({ message: "User already exists" });
         }
 
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // Handle profile image (store file path)
         let profileImage = null;
         if (req.file) {
             profileImage = `/uploads/${req.file.filename}`;
         }
 
-        // Create new user
         const newUser = new User({
             username,
             email,
             password: hashedPassword,
-            profileImage, // Storing only the file path
+            profileImage,
             mobile,
             gender,
             dob,
@@ -56,12 +51,12 @@ const addUser = async (req, res) => {
         });
 
         const response = await newUser.save();
-        console.log("response of mongo",response);
+        console.log("response of mongo", response);
 
         return res.status(201).json({
             message: "User Registration Successful.",
             user: newUser,
-            status:201
+            status: 201
         });
 
     } catch (err) {
@@ -73,4 +68,38 @@ const addUser = async (req, res) => {
     }
 };
 
-module.exports = { addUser };
+const setReminder = async (req,res) => {
+    console.log("Fetching the reminder data...");
+
+    try {
+        const { userId, transactionName, reminderTitle, reminderDuration, reminderDueDate, amount } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const newReminder = {
+            userId,
+            reminderCategory,
+            reminderTitle,
+            reminderDuration,
+            reminderDueDate,
+            amount,
+            isCompleted: false,
+            isSnoozed: false,
+            isDeleted: false,
+        };
+        
+        user.reminders.push(newReminder);
+
+        await user.save();
+
+        res.status(201).json({ message: "Reminder added successfully", reminder: newReminder });
+    } catch (err) {
+        console.error("Error adding reminder:", err);
+        res.status(500).json({ error: err.message });
+    }
+}
+
+module.exports = { addUser, setReminder };

@@ -61,9 +61,9 @@ const userSchema = new mongoose.Schema({
     state: { type: String, required: true },
     pincode: { type: String, required: true },
     jobTitle: { type: String, required: true },
-    debt: { type: Number, default: 0 }, // Store user's total debt
-    savings: { type: Number, default: 0 }, // Store total savings
-    initialIncome: { type: Number, required: true }, // Renamed from "income"
+    debt: { type: Number, default: 0 }, 
+    savings: { type: Number, default: 0 }, 
+    initialIncome: { type: Number, required: true },
     transactions: [{ 
         amount: Number, 
         date: Date,
