@@ -16,7 +16,14 @@ const SALT_ROUNDS = 10;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use("/uploads", express.static(path.join(__dirname, 'uploads')));
+
+const uploadsPath = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath, { recursive: true });
+    console.log("📂 'uploads' folder created successfully.");
+}
+
+app.use("/uploads", express.static(uploadsPath));
 app.use("", router);
 
 const verifyToken = (req, res, next) => {
