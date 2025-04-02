@@ -1,6 +1,7 @@
 const express = require("express");
 const sendMail = require("./mailService");
 const path = require('path');
+const fs = require('fs');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
