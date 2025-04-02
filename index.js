@@ -164,7 +164,7 @@ app.post('/loan', async (req, res) => {
 
 // Get Methods
 
-app.get('/home', async (req, res) => {
+app.get('/dashboard', async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).json(users);
