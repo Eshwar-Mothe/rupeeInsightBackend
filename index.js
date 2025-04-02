@@ -174,6 +174,16 @@ app.get('/home', async (req, res) => {
     }
 });
 
+app.get('/reminders', async (req, res) => {
+    try {
+        const users = await Reminder.find();
+        res.status(200).json(users);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message, message: 'Error in fetching UserData' });
+    }
+});
+
 app.get('/expenses', (req, res) => {
     try {
 
