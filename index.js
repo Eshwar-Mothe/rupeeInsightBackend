@@ -176,6 +176,37 @@ app.get('/debts', verifyToken, async (req, res) => {
     }
 });
 
+app.get('/home', async (req, res) => {
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message, message: 'Error in fetching UserData' });
+    }
+});
+
+app.get('/reminders', async (req, res) => {
+    try {
+        const users = await Reminder.find();
+        res.status(200).json(users);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message, message: 'Error in fetching UserData' });
+    }
+});
+
+app.get('/expenses', (req, res) => {
+    try {
+
+    }
+    catch (err) {
+        console.log(err)
+        res.send({ message: "Error Reading the Expenses Data", Error: err })
+    }
+})
+
+
 mongoose.connect(process.env.MONGO_URI, { dbName: "usersData" })
     .then(() => console.log("✅ MongoDB Connected"))
     .catch(err => console.error("❌ MongoDB Connection Error:", err));
