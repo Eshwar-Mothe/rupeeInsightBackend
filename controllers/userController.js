@@ -72,7 +72,7 @@ const setReminder = async (req,res) => {
     console.log("Fetching the reminder data...");
 
     try {
-        const { userId, transactionName, reminderTitle, reminderDuration, reminderDueDate, amount } = req.body;
+        const { userId, reminderCategory, reminderTitle, reminderDuration, reminderDueDate, amount } = req.body;
 
         const user = await User.findById(userId);
         if (!user) {
