@@ -30,14 +30,15 @@ const investmentSchema = new mongoose.Schema({
 
 // Reminder Schema
 const reminderSchema = new mongoose.Schema({
-    transactionName: String,
-    reminderTitle: String,
-    reminderDuration: String,
-    reminderDueDate: Date,
-    amount: Number,
-    isCompleted: Boolean,
-    isSnoozed: Boolean,
-    isDeleted: Boolean
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    reminderCategory: { type: String, required: true },
+    reminderTitle: { type: String, required: true },
+    reminderDuration: { type: String, required: true },
+    reminderDueDate: { type: Date, required: true }, 
+    amount: { type: Number, required: true }, 
+    isCompleted: { type: Boolean, default: false },
+    isSnoozed: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false }
 });
 
 // User Schema

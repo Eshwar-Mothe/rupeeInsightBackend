@@ -74,10 +74,19 @@ const setReminder = async (req,res) => {
     try {
         const { userId, reminderCategory, reminderTitle, reminderDuration, reminderDueDate, amount } = req.body;
 
+        amount = Number(amount);
+
+        const [day, month, year] = reminderDueDate.split("/");
+        const formattedDate = new Date(`${year}-${month}-${day}`);
+
+        if (isNaN(formattedDate.getTime())) {
+            return res.status(400).json({ message: "Invalid date format" });
+        }
+
         console.log("received Data from PostReminder",userId, reminderCategory, reminderTitle, reminderDuration, reminderDueDate, amount)
 
         const user = await User.findById(userId);
-        console.log("User finding by id in userController",user)
+        // console.log("User finding by id in userController",user)
         if (!user) {
             console.log("User not found")
             return res.status(404).json({ message: "User not found" });
@@ -88,7 +97,7 @@ const setReminder = async (req,res) => {
             reminderCategory,
             reminderTitle,
             reminderDuration,
-            reminderDueDate,
+            reminderDueDate:formattedDate,
             amount,
             isCompleted: false,
             isSnoozed: false,
