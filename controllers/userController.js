@@ -94,8 +94,8 @@ const setReminder = async (req,res) => {
             isSnoozed: false,
             isDeleted: false,
         };
-        
         user.reminders.push(newReminder);
+        console.log("reminers after adding reminder", user.reminders)
 
         const response = await user.save();
         console.log("response for reminder", response);
