@@ -74,8 +74,12 @@ const setReminder = async (req,res) => {
     try {
         const { userId, reminderCategory, reminderTitle, reminderDuration, reminderDueDate, amount } = req.body;
 
+        console.log("received Data from PostReminder",userId, reminderCategory, reminderTitle, reminderDuration, reminderDueDate, amount)
+
         const user = await User.findById(userId);
+        console.log("User finding by id in userController",user)
         if (!user) {
+            console.log("User not found")
             return res.status(404).json({ message: "User not found" });
         }
 
@@ -93,7 +97,8 @@ const setReminder = async (req,res) => {
         
         user.reminders.push(newReminder);
 
-        await user.save();
+        const response = await user.save();
+        console.log("response for reminder", response);
 
         res.status(201).json({ message: "Reminder added successfully", reminder: newReminder });
     } catch (err) {
