@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 
 const expenseSchema = new mongoose.Schema({
-    category: String,
-    subcategory: String,
-    amount: Number,
-    date: Date,
-    paymentMethod: String,
-    note: String
+    category: { type: String, required: true },
+    subcategory: { type: String, required: true },
+    amount: { type: Number, required: true },
+    date: { type: Date, required: true },
+    paymentMethod: { type: String, required: true },
+    note: { type: String, default: "" },
 });
 
 

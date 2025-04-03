@@ -1,6 +1,6 @@
 const express = require("express");
 const multer = require("multer");
-const { addUser, setReminder } = require("../controllers/userController");
+const { addUser, setReminder, addExpense, addDebt, addInvestment } = require("../controllers/userController");
 
 const router = express.Router();
 
@@ -19,6 +19,8 @@ const upload = multer({ storage });
 
 router.post("/signup", upload.single("profileImage"), addUser);
 router.post("/reminders", setReminder)
+router.post("./expenses", addExpense)
+router.post("./loans", addDebt)
 // router.put("/users/:id", async (req, res) => {
 //     const { id } = req.params;
 //     const { name, email, profileImage } = req.body;
