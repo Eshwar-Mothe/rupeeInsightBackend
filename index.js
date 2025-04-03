@@ -72,17 +72,20 @@ app.post('/login', async (req, res) => {
 
 app.post('/expenses', verifyToken, async (req, res) => {
     try {
-        const { category, customCategory, subcategory, customSubCategory, amount, date, paymentMethod, note } = req.body;
-        const user = await User.findById(req.userId);
+        console.log(req.body)
+        const { category, subcategory, amount, date, paymentMethod, note,type,userId } = req.body;
+        const user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: "User not found" });
 
         const newExpense = { 
-            category: category === "Others" ? customCategory : category,
-            subcategory: subcategory === "Others" ? customSubCategory : subcategory,
+            category ,
+            subcategory,
             amount,
             date,
             paymentMethod,
-            note: note || ""
+            note,
+            type,
+            userId
         };
 
         user.expenses.push(newExpense);
