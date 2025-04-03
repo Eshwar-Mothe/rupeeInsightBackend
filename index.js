@@ -188,23 +188,24 @@ app.get('/home', async (req, res) => {
 
 app.get('/reminders', async (req, res) => {
     try {
-        const users = await Reminder.find();
-        res.status(200).json(users);
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        res.status(200).json(user.reminders);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message, message: 'Error in fetching UserData' });
+        res.status(500).json({ message: "Error fetching debts", error: err.message });
     }
 });
 
-app.get('/expenses', (req, res) => {
-    try {
+// app.get('/expenses', (req, res) => {
+//     try {
 
-    }
-    catch (err) {
-        console.log(err)
-        res.send({ message: "Error Reading the Expenses Data", Error: err })
-    }
-})
+//     }
+//     catch (err) {
+//         console.log(err)
+//         res.send({ message: "Error Reading the Expenses Data", Error: err })
+//     }
+// })
 
 
 mongoose.connect(process.env.MONGO_URI, { dbName: "usersData" })
