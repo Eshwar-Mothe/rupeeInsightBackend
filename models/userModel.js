@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// Expense Schema
+
 const expenseSchema = new mongoose.Schema({
     category: String,
     subcategory: String,
@@ -10,7 +10,7 @@ const expenseSchema = new mongoose.Schema({
     note: String
 });
 
-// Loan Schema (renamed debtsSchema)
+
 const debtsSchema = new mongoose.Schema({
     loanType: String,
     loanAmount: Number,
@@ -19,7 +19,7 @@ const debtsSchema = new mongoose.Schema({
     dueDate: Date
 });
 
-// Investment Schema
+
 const investmentSchema = new mongoose.Schema({
     investmentType: String,
     amount: Number,
@@ -28,7 +28,7 @@ const investmentSchema = new mongoose.Schema({
     returns: Number
 });
 
-// Reminder Schema
+
 const reminderSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     reminderCategory: { type: String, required: true },
@@ -41,7 +41,7 @@ const reminderSchema = new mongoose.Schema({
     isDeleted: { type: Boolean, default: false }
 });
 
-// User Schema
+
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -63,10 +63,10 @@ const userSchema = new mongoose.Schema({
         type: { type: String, enum: ["income", "expense"] } 
     }],
 
-    expenses: [expenseSchema],  // Added Expenses Array
-    debts: [debtsSchema],       // Added Debts Array
-    investments: [investmentSchema], // Added Investments Array
-    reminders: [reminderSchema], // Added Reminders Array
+    expenses: [expenseSchema],  
+    debts: [debtsSchema],       
+    investments: [investmentSchema], 
+    reminders: [reminderSchema], 
 
     totals: { 
         totalExpenses: { type: Number, default: 0 },
@@ -78,36 +78,36 @@ const userSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-// 🔹 Method to Push New Reminder
+
 userSchema.methods.addReminder = async function (newReminder) {
     this.reminders.push(newReminder);
     await this.save();
     return this;
 };
 
-// 🔹 Method to Push New Expense
+
 userSchema.methods.addExpense = async function (newExpense) {
     this.expenses.push(newExpense);
-    this.totals.totalExpenses += newExpense.amount; // Update total
+    this.totals.totalExpenses += newExpense.amount; 
     await this.save();
     return this;
 };
 
-// 🔹 Method to Push New Debt
+
 userSchema.methods.addDebt = async function (newDebt) {
     this.debts.push(newDebt);
-    this.totals.totalLoans += newDebt.loanAmount; // Update total
+    this.totals.totalLoans += newDebt.loanAmount; 
     await this.save();
     return this;
 };
 
-// 🔹 Method to Push New Investment
+
 userSchema.methods.addInvestment = async function (newInvestment) {
     this.investments.push(newInvestment);
     await this.save();
     return this;
 };
 
-// Create Model
+
 const User = mongoose.model('Users', userSchema);
 module.exports = User;

@@ -74,7 +74,7 @@ const setReminder = async (req,res) => {
     try {
         const { userId, reminderCategory, reminderTitle, reminderDuration, reminderDueDate, amount } = req.body;
 
-        amount = Number(amount);
+        const price = Number(amount);
 
         const [day, month, year] = reminderDueDate.split("/");
         const formattedDate = new Date(`${year}-${month}-${day}`);
@@ -98,7 +98,7 @@ const setReminder = async (req,res) => {
             reminderTitle,
             reminderDuration,
             reminderDueDate:formattedDate,
-            amount,
+            amount:price,
             isCompleted: false,
             isSnoozed: false,
             isDeleted: false,
