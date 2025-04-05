@@ -200,16 +200,6 @@ app.get('/reminders', async (req, res) => {
     }
 });
 
-// app.get('/expenses', (req, res) => {
-//     try {
-
-//     }
-//     catch (err) {
-//         console.log(err)
-//         res.send({ message: "Error Reading the Expenses Data", Error: err })
-//     }
-// })
-
 
 mongoose.connect(process.env.MONGO_URI, { dbName: "usersData" })
     .then(() => console.log("✅ MongoDB Connected"))

@@ -112,7 +112,7 @@ const setReminder = async (req, res) => {
 
 const addExpense = async (req, res) => {
     try {
-        const { userId, category, subcategory, amount, date, paymentMethod, note } = req.body;
+        const { category, subcategory, amount, date, paymentMethod, note, type, userId, } = req.body;
 
         if (!userId || !category || !subcategory || !amount || !date || !paymentMethod) {
             return res.status(400).json({ message: "All fields are required" });
@@ -129,8 +129,9 @@ const addExpense = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const newExpense = { category, subcategory, amount, date: formattedDate, paymentMethod, note };
-        await user.addExpense(newExpense);
+        const newExpense = { category, subcategory, amount, date: formattedDate, paymentMethod, type, note };
+         user.expenses.push(newExpense);
+        await user.save()
 
         res.status(201).json({ message: "Expense added successfully", expense: newExpense });
     } catch (err) {
@@ -188,7 +189,7 @@ const addInvestment = async (req, res) => {
         }
 
         const newInvestment = { investmentType, amount, date: formattedDate, riskLevel, returns };
-        await user.addInvestment(newInvestment);
+        await user.investments.push(newInvestment);
 
         res.status(201).json({ message: "Investment added successfully", investment: newInvestment });
     } catch (err) {
