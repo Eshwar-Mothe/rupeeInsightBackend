@@ -112,6 +112,7 @@ const setReminder = async (req, res) => {
 
 const addExpense = async (req, res) => {
     try {
+        console.log("receieved Data", req.body)
         const { category, subcategory, amount, date, paymentMethod, note, type, userId, } = req.body;
 
         if (!userId || !category || !subcategory || !amount || !date || !paymentMethod) {

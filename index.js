@@ -70,8 +70,9 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.post('/expenses', verifyToken, async (req, res) => {
+app.post('/expenses', async (req, res) => {
     try {
+        console.log("am coming here at Index.js")
         console.log(req.body)
         const { category, subcategory, amount, date, paymentMethod, note,type,userId } = req.body;
         const user = await User.findById(userId);
