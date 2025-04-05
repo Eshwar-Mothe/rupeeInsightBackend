@@ -131,7 +131,7 @@ const addExpense = async (req, res) => {
         }
 
         const newExpense = { category, subcategory, amount, date: formattedDate, paymentMethod, type, note };
-         user.expenses.push(newExpense);
+        user.expenses.push(newExpense);
         await user.save()
 
         res.status(201).json({ message: "Expense added successfully", expense: newExpense });
@@ -161,7 +161,8 @@ const addDebt = async (req, res) => {
         }
 
         const newDebt = { loanType, loanAmount, remainingBalance, interestRate, dueDate: formattedDate };
-        await user.addDebt(newDebt);
+        user.debts.push(newDebt);
+        await user.save()
 
         res.status(201).json({ message: "Debt added successfully", debt: newDebt });
     } catch (err) {
@@ -190,7 +191,8 @@ const addInvestment = async (req, res) => {
         }
 
         const newInvestment = { investmentType, amount, date: formattedDate, riskLevel, returns };
-        await user.investments.push(newInvestment);
+        user.investments.push(newInvestment);
+        await user.save()
 
         res.status(201).json({ message: "Investment added successfully", investment: newInvestment });
     } catch (err) {

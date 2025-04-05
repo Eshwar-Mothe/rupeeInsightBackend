@@ -27,7 +27,7 @@ if (!fs.existsSync(uploadsPath)) {
 app.use("/uploads", express.static(uploadsPath));
 app.use("", router);
 
-const verifyToken = (req, res, next) => {
+const verifyToken = (req, res, next) => {   
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) return res.status(401).json({ message: "Unauthorized access" });
 
@@ -70,34 +70,34 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.post('/expenses', async (req, res) => {
-    try {
-        console.log("am coming here at Index.js")
-        console.log(req.body)
-        const { category, subcategory, amount, date, paymentMethod, note,type,userId } = req.body;
-        const user = await User.findById(userId);
-        if (!user) return res.status(404).json({ message: "User not found" });
+// app.post('/expenses', async (req, res) => {
+//     try {
+//         console.log("am coming here at Index.js")
+//         console.log(req.body)
+//         const { category, subcategory, amount, date, paymentMethod, note,type,userId } = req.body;
+//         const user = await User.findById(userId);
+//         if (!user) return res.status(404).json({ message: "User not found" });
 
-        const newExpense = { 
-            category ,
-            subcategory,
-            amount,
-            date,
-            paymentMethod,
-            note,
-            type,
-            userId
-        };
+//         const newExpense = { 
+//             category ,
+//             subcategory,
+//             amount,
+//             date,
+//             paymentMethod,
+//             note,
+//             type,
+//             userId
+//         };
 
-        user.expenses.push(newExpense);
-        user.totals.totalExpenses += amount;
-        await user.save();
+//         user.expenses.push(newExpense);
+//         user.totals.totalExpenses += amount;
+//         await user.save();
 
-        res.status(201).json({ message: "Expense added successfully", expense: newExpense });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+//         res.status(201).json({ message: "Expense added successfully", expense: newExpense });
+//     } catch (err) {
+//         res.status(500).json({ error: err.message });
+//     }
+// });
 
 app.post('/reminders', verifyToken, async (req, res) => {
     try {
