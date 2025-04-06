@@ -113,7 +113,7 @@ const setReminder = async (req, res) => {
 const addExpense = async (req, res) => {
     try {
         console.log("receieved Data", req.body)
-        const { category, subcategory, amount, date, paymentMethod, note, type, userId, } = req.body;
+        const { category, subcategory, amount, date, paymentMethod, note, type, userId } = req.body;
 
         if (!userId || !category || !subcategory || !amount || !date || !paymentMethod) {
             return res.status(400).json({ message: "All fields are required" });
@@ -130,7 +130,7 @@ const addExpense = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const newExpense = { category, subcategory, amount, date: formattedDate, paymentMethod, type, note };
+        const newExpense = { category, subcategory, amount, date: formattedDate, paymentMethod, type, note, userId };
         user.expenses.push(newExpense);
         await user.save()
 
