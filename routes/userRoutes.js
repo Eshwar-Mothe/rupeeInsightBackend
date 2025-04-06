@@ -19,8 +19,8 @@ const upload = multer({ storage });
 
 router.post("/signup", upload.single("profileImage"), addUser);
 router.post("/reminders", setReminder)
-router.post("./expenses", addExpense)
-router.post("./loans", addDebt)
+router.post("/expenses", addExpense)
+router.post("/loans", addDebt)
 
 // router.put("/users/:id", async (req, res) => {
 //     const { id } = req.params;
