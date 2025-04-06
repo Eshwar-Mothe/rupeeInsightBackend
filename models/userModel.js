@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-
+// ====== Subschemas ======
 const expenseSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     category: { type: String, required: true },
@@ -8,28 +8,25 @@ const expenseSchema = new mongoose.Schema({
     amount: { type: Number, required: true },
     date: { type: Date, required: true },
     paymentMethod: { type: String, required: true },
-    type:{type:String, required:true},
+    type: { type: String, required: true },
     note: { type: String, default: "" },
 });
-
 
 const debtsSchema = new mongoose.Schema({
     loanType: String,
     loanAmount: Number,
     remainingBalance: Number,
     interestRate: Number,
-    dueDate: Date
+    dueDate: Date,
 });
-
 
 const investmentSchema = new mongoose.Schema({
     investmentType: String,
     amount: Number,
     date: Date,
     riskLevel: String,
-    returns: Number
+    returns: Number,
 });
-
 
 const reminderSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -40,10 +37,10 @@ const reminderSchema = new mongoose.Schema({
     amount: { type: Number, required: true }, 
     isCompleted: { type: Boolean, default: false },
     isSnoozed: { type: Boolean, default: false },
-    isDeleted: { type: Boolean, default: false }
+    isDeleted: { type: Boolean, default: false },
 });
 
-
+// ====== Main User Schema ======
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -59,57 +56,71 @@ const userSchema = new mongoose.Schema({
     jobTitle: { type: String, required: true },
     initialIncome: { type: Number, required: true },
 
-    transactions: [{ 
-        amount: Number, 
+    transactions: [{
+        amount: Number,
         date: Date,
-        type: { type: String, enum: ["income", "expense"] } 
+        type: { type: String, enum: ["income", "expense"] },
     }],
 
-    expenses: [expenseSchema],  
-    debts: [debtsSchema],       
-    investments: [investmentSchema], 
-    reminders: [reminderSchema], 
+    expenses: [expenseSchema],
+    debts: [debtsSchema],
+    investments: [investmentSchema],
+    reminders: [reminderSchema],
 
-    totals: { 
+    totals: {
         totalExpenses: { type: Number, default: 0 },
         totalLoans: { type: Number, default: 0 },
         totalSavings: { type: Number, default: 0 },
-        totalIncome: { type: Number, default: 0 }
+        totalIncome: { type: Number, default: 0 },
     },
 
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
 });
 
-
+// ====== Instance Methods ======
 userSchema.methods.addReminder = async function (newReminder) {
     this.reminders.push(newReminder);
     await this.save();
     return this;
 };
 
-
 userSchema.methods.addExpense = async function (newExpense) {
     this.expenses.push(newExpense);
-    this.totals.totalExpenses += newExpense.amount; 
+    this.totals.totalExpenses += newExpense.amount;
     await this.save();
     return this;
 };
-
 
 userSchema.methods.addDebt = async function (newDebt) {
     this.debts.push(newDebt);
-    this.totals.totalLoans += newDebt.loanAmount; 
+    this.totals.totalLoans += newDebt.loanAmount;
     await this.save();
     return this;
 };
-
 
 userSchema.methods.addInvestment = async function (newInvestment) {
     this.investments.push(newInvestment);
+    this.totals.totalSavings += newInvestment.amount;
     await this.save();
     return this;
 };
 
+// ====== Recalculate All Totals Method ======
+userSchema.methods.recalculateTotals = function () {
+    this.totals.totalExpenses = this.expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
+    this.totals.totalLoans = this.debts.reduce((sum, debt) => sum + (debt.loanAmount || 0), 0);
+    this.totals.totalSavings = this.investments.reduce((sum, inv) => sum + (inv.amount || 0), 0);
+    this.totals.totalIncome = this.transactions
+        .filter(tx => tx.type === "income")
+        .reduce((sum, tx) => sum + (tx.amount || 0), 0);
+};
 
+// ====== Optional: Auto-recalculate before save ======
+userSchema.pre("save", function (next) {
+    this.recalculateTotals();
+    next();
+});
+
+// ====== Export User Model ======
 const User = mongoose.model('Users', userSchema);
 module.exports = User;
