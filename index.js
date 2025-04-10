@@ -51,6 +51,19 @@ app.post("/sendMail", async (req, res) => {
     }
 });
 
+app.post("/reset", async (req, res) => {
+    try {
+        const { to, subject, text } = req.body;
+        const isUserExist = await User.findOne({ email: to });
+        if (!isUserExist) return res.status(400).json({ message: "User not exists" });
+
+        const response = await sendMail({ to, subject, text });
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to send email." });
+    }
+});
+
 app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
