@@ -54,7 +54,7 @@ app.post("/sendMail", async (req, res) => {
 app.post("/reset", async (req, res) => {
     try {
         const { to, subject, text } = req.body;
-        const isUserExist = await User.findOne({ email: to });
+        const isUserExist = await User.findOne({ to });
         if (!isUserExist) return res.status(400).json({ message: "User not exists" });
 
         const response = await sendMail({ to, subject, text });

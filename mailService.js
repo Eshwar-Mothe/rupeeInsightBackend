@@ -23,7 +23,7 @@ const sendMail = async (payload) => {
             text,
         });
         console.log("Email sent: ", info.messageId);
-        return { success: true, messageId: info.messageId, message:"OTP Sent Successfully", status:200 };
+        return { success: true, messageId: info.messageId, message:"Email Sent Successfully", status:200 };
     } catch (error) {
         console.error("Error sending email: ", error);
         return { success: false, error: error.message };
