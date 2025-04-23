@@ -61,7 +61,7 @@ const userSchema = new mongoose.Schema({
     transactions: [{
         amount: Number,
         date: Date,
-        type: { type: String, enum: ["savings", "expense", "debt"] },
+        type: { type: String, enum: ["savings", "expense", "debt", "income"] },
     }],
 
     expenses: [expenseSchema],
@@ -76,6 +76,7 @@ const userSchema = new mongoose.Schema({
         totalIncome: { type: Number, default: 0 },
     },
 
+    lastIncomeRenewedAt: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now },
 });
 
@@ -129,37 +130,30 @@ userSchema.methods.recalculateTotals = function () {
     this.totals.totalExpenses = this.expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
     this.totals.totalLoans = this.debts.reduce((sum, debt) => sum + (debt.loanAmount || 0), 0);
     this.totals.totalSavings = this.investments.reduce((sum, inv) => sum + (inv.amount || 0), 0);
-    this.totals.totalIncome = this.transactions
-        .filter(tx => tx.type === "income")
-        .reduce((sum, tx) => sum + (tx.amount || 0), 0);
+    const now = new Date();
+    const diffInMs = now - new Date(this.createdAt);
+    console.log("values",this.createdAt,diffInMs)//consoling the values to know when it is triggering
+    const monthsSinceCreation = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 30));
+    this.totals.totalIncome = this.initialIncome * (monthsSinceCreation + 1);
 };
 
 // ====== Renew Monthly Income ======
 
 userSchema.methods.renewMonthlyIncome = async function () {
     const now = new Date();
-    const lastIncomeTx = this.transactions
-        .filter(tx => tx.type === "income")
-        .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+    const diffInMs = now - new Date(this.lastIncomeRenewedAt);
+    const daysSinceLastRenewed = diffInMs / (1000 * 60 * 60 * 24);
 
-    const lastIncomeDate = lastIncomeTx ? new Date(lastIncomeTx.date) : new Date(this.createdAt);
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-    const lastMonth = lastIncomeDate.getMonth();
-    const lastYear = lastIncomeDate.getFullYear();
-
-    if (currentMonth !== lastMonth || currentYear !== lastYear) {
-        const incomeDate = new Date(currentYear, currentMonth, 1);
+    if (daysSinceLastRenewed >= 30) {
+        this.totals.totalIncome += this.initialIncome;
         this.transactions.push({
             amount: this.initialIncome,
-            date: incomeDate,
+            date: now,
             type: "income"
         });
-
-        this.totals.totalIncome += this.initialIncome;
+        this.lastIncomeRenewedAt = now;
         await this.save();
     }
-
     return this;
 };
 

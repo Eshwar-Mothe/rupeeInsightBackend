@@ -216,6 +216,7 @@ app.get('/reminders', async (req, res) => {
     }
 });
 
+console.log(process.env.MONGO_URI)
 
 mongoose.connect(process.env.MONGO_URI, { dbName: "usersData" })
     .then(() => console.log("✅ MongoDB Connected"))
