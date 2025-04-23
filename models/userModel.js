@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 // ====== Sub Schemas ======
-
 const expenseSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     category: { type: String, required: true },
@@ -42,7 +41,6 @@ const reminderSchema = new mongoose.Schema({
 });
 
 // ====== User Schema ======
-
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -124,46 +122,44 @@ userSchema.methods.addInvestment = async function (newInvestment) {
     return this;
 };
 
-// ====== Recalculate Totals ======
-
 userSchema.methods.recalculateTotals = function () {
     this.totals.totalExpenses = this.expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
     this.totals.totalLoans = this.debts.reduce((sum, debt) => sum + (debt.loanAmount || 0), 0);
     this.totals.totalSavings = this.investments.reduce((sum, inv) => sum + (inv.amount || 0), 0);
+
     const now = new Date();
     const diffInMs = now - new Date(this.createdAt);
-    console.log("values",this.createdAt,diffInMs)//consoling the values to know when it is triggering
     const monthsSinceCreation = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 30));
     this.totals.totalIncome = this.initialIncome * (monthsSinceCreation + 1);
-    console.log('totals',this.totals.totalIncome)
 };
 
 // ====== Renew Monthly Income ======
 
 userSchema.methods.renewMonthlyIncome = async function () {
     const now = new Date();
-    const diffInMs = now - new Date(this.lastIncomeRenewedAt);
-    const daysSinceLastRenewed = diffInMs / (1000 * 60 * 60 * 24);
+    const created = new Date(this.createdAt);
+    const lastRenewed = new Date(this.lastIncomeRenewedAt);
 
-    if (daysSinceLastRenewed >= 30) {
+    const sameDay = created.getDate() === now.getDate();
+    const monthChanged = now.getMonth() !== lastRenewed.getMonth() || now.getFullYear() !== lastRenewed.getFullYear();
+
+    if (sameDay && monthChanged) {
         this.totals.totalIncome += this.initialIncome;
-        this.transactions.push({
-            amount: this.initialIncome,
-            date: now,
-            type: "income"
-        });
         this.lastIncomeRenewedAt = now;
+        this.recalculateTotals();
         await this.save();
+        console.log(`Income renewed for user: ${this.email}`);
     }
-    return this;
 };
 
 // ====== Pre Save Hook ======
+
 userSchema.pre("save", function (next) {
     this.recalculateTotals();
     next();
 });
 
 // ====== Export Model ======
+
 const User = mongoose.model('Users', userSchema);
 module.exports = User;

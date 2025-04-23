@@ -10,6 +10,8 @@ const cors = require('cors');
 const router = require("./routes/userRoutes");
 const User = require('./models/userModel');
 
+
+
 const app = express();
 const SECRET_KEY = process.env.SECRET_KEY || 'rupeeInsight';
 const SALT_ROUNDS = 10;
@@ -221,6 +223,8 @@ console.log(process.env.MONGO_URI)
 mongoose.connect(process.env.MONGO_URI, { dbName: "usersData" })
     .then(() => console.log("✅ MongoDB Connected"))
     .catch(err => console.error("❌ MongoDB Connection Error:", err));
+
+require('./cronJobs/renewIncomeJob');
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
