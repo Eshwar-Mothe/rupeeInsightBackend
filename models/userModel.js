@@ -135,6 +135,7 @@ userSchema.methods.recalculateTotals = function () {
     console.log("values",this.createdAt,diffInMs)//consoling the values to know when it is triggering
     const monthsSinceCreation = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 30));
     this.totals.totalIncome = this.initialIncome * (monthsSinceCreation + 1);
+    console.log('totals',this.totals.totalIncome)
 };
 
 // ====== Renew Monthly Income ======
