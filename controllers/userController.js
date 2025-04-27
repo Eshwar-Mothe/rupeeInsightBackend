@@ -72,7 +72,6 @@ const setReminder = async (req, res) => {
         const { userId, reminderCategory, reminderTitle, reminderDuration, reminderDueDate, amount } = req.body;
         const price = Number(amount);
 
-        // Convert DD/MM/YYYY to YYYY-MM-DD
         const [day, month, year] = reminderDueDate.split("/");
         const formattedDate = new Date(`${year}-${month}-${day}`);
 

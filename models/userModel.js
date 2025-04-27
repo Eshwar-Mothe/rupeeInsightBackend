@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// ====== Sub Schemas ======
+
 const expenseSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     category: { type: String, required: true },
@@ -40,7 +40,7 @@ const reminderSchema = new mongoose.Schema({
     isDeleted: { type: Boolean, default: false },
 });
 
-// ====== User Schema ======
+
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -78,7 +78,7 @@ const userSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
-// ====== Instance Methods ======
+
 
 userSchema.methods.addReminder = async function (newReminder) {
     this.reminders.push(newReminder);
@@ -133,8 +133,6 @@ userSchema.methods.recalculateTotals = function () {
     this.totals.totalIncome = this.initialIncome * (monthsSinceCreation + 1);
 };
 
-// ====== Renew Monthly Income ======
-
 userSchema.methods.renewMonthlyIncome = async function () {
     const now = new Date();
     const lastRenewed = new Date(this.lastIncomeRenewedAt);
@@ -164,15 +162,10 @@ userSchema.methods.renewMonthlyIncome = async function () {
     }
 };
 
-
-// ====== Pre Save Hook ======
-
 userSchema.pre("save", function (next) {
     this.recalculateTotals();
     next();
 });
-
-// ====== Export Model ======
 
 const User = mongoose.model('Users', userSchema);
 module.exports = User;

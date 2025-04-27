@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const loanSchema = new mongoose.Schema({
     loanAmount: { type: Number, required: true },
     interestRate: { type: Number, required: true },
-    tenure: { type: Number, required: true }, // In months or years
+    tenure: { type: Number, required: true },
     borrowerName: { type: String, required: true },
-    remainingBalance: { type: Number, required: true }, // Remaining loan amount
-    startDate: { type: String, required: true }, // "YYYY-MM-DD"
-    isPaidOff: { type: Boolean, default: false } // Whether the loan is fully repaid
+    remainingBalance: { type: Number, required: true },
+    startDate: { type: String, required: true },
+    isPaidOff: { type: Boolean, default: false }
 });
 
 const Loan = mongoose.model('Loan', loanSchema);
