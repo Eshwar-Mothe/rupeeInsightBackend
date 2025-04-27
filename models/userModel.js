@@ -137,20 +137,33 @@ userSchema.methods.recalculateTotals = function () {
 
 userSchema.methods.renewMonthlyIncome = async function () {
     const now = new Date();
-    const created = new Date(this.createdAt);
     const lastRenewed = new Date(this.lastIncomeRenewedAt);
 
-    const sameDay = created.getDate() === now.getDate();
+    const getLastWorkingDay = (date) => {
+        let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        while (lastDay.getDay() === 0 || lastDay.getDay() === 6) {
+            lastDay.setDate(lastDay.getDate() - 1);
+        }
+        return lastDay;
+    };
+
+    const lastWorkingDay = getLastWorkingDay(now);
+
+    const isSameDay = now.getDate() === lastWorkingDay.getDate() &&
+                      now.getMonth() === lastWorkingDay.getMonth() &&
+                      now.getFullYear() === lastWorkingDay.getFullYear();
+
     const monthChanged = now.getMonth() !== lastRenewed.getMonth() || now.getFullYear() !== lastRenewed.getFullYear();
 
-    if (sameDay && monthChanged) {
+    if (isSameDay && monthChanged) {
         this.totals.totalIncome += this.initialIncome;
         this.lastIncomeRenewedAt = now;
         this.recalculateTotals();
         await this.save();
-        console.log(`Income renewed for user: ${this.email}`);
+        console.log(`Income renewed for user: ${this.email} on last working day.`);
     }
 };
+
 
 // ====== Pre Save Hook ======
 
