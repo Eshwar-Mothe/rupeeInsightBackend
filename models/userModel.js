@@ -55,6 +55,7 @@ const userSchema = new mongoose.Schema({
     pincode: { type: String, required: true },
     jobTitle: { type: String, required: true },
     initialIncome: { type: Number, required: true },
+    initialDebt: { type: Number },
 
     transactions: [{
         amount: Number,

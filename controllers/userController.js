@@ -44,9 +44,9 @@ const addUser = async (req, res) => {
             state,
             pincode,
             jobTitle,
-            debt,
             savings,
             initialIncome: income,
+            initialDebt:debt
         });
 
         const response = await newUser.save();
