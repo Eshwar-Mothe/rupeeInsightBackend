@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-
+// Expense Schema
 const expenseSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     category: { type: String, required: true },
@@ -12,6 +12,7 @@ const expenseSchema = new mongoose.Schema({
     note: { type: String, default: "" },
 });
 
+// Debt Schema
 const debtsSchema = new mongoose.Schema({
     loanType: String,
     loanAmount: Number,
@@ -20,6 +21,7 @@ const debtsSchema = new mongoose.Schema({
     dueDate: Date,
 });
 
+// Investment Schema
 const investmentSchema = new mongoose.Schema({
     investmentType: String,
     amount: Number,
@@ -28,6 +30,7 @@ const investmentSchema = new mongoose.Schema({
     returns: Number,
 });
 
+// Reminder Schema
 const reminderSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     reminderCategory: { type: String, required: true },
@@ -40,7 +43,7 @@ const reminderSchema = new mongoose.Schema({
     isDeleted: { type: Boolean, default: false },
 });
 
-
+// User Schema
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -79,14 +82,14 @@ const userSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
-
-
+// Add Reminder Method
 userSchema.methods.addReminder = async function (newReminder) {
     this.reminders.push(newReminder);
     await this.save();
     return this;
 };
 
+// Add Expense Method
 userSchema.methods.addExpense = async function (newExpense) {
     this.expenses.push(newExpense);
     this.transactions.push({
@@ -99,6 +102,7 @@ userSchema.methods.addExpense = async function (newExpense) {
     return this;
 };
 
+// Add Debt Method
 userSchema.methods.addDebt = async function (newDebt) {
     this.debts.push(newDebt);
     this.transactions.push({
@@ -111,6 +115,7 @@ userSchema.methods.addDebt = async function (newDebt) {
     return this;
 };
 
+// Add Investment Method
 userSchema.methods.addInvestment = async function (newInvestment) {
     this.investments.push(newInvestment);
     this.transactions.push({
@@ -123,17 +128,15 @@ userSchema.methods.addInvestment = async function (newInvestment) {
     return this;
 };
 
+// Recalculate Totals (excluding totalIncome)
 userSchema.methods.recalculateTotals = function () {
     this.totals.totalExpenses = this.expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
     this.totals.totalLoans = this.debts.reduce((sum, debt) => sum + (debt.loanAmount || 0), 0);
     this.totals.totalSavings = this.investments.reduce((sum, inv) => sum + (inv.amount || 0), 0);
-
-    const now = new Date();
-    const diffInMs = now - new Date(this.createdAt);
-    const monthsSinceCreation = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 30));
-    this.totals.totalIncome = this.initialIncome * (monthsSinceCreation + 1);
+    // Do not recalculate totalIncome here — it's handled in renewMonthlyIncome
 };
 
+// Renew Monthly Income (last working day logic)
 userSchema.methods.renewMonthlyIncome = async function () {
     const now = new Date();
     const lastRenewed = new Date(this.lastIncomeRenewedAt);
@@ -148,25 +151,33 @@ userSchema.methods.renewMonthlyIncome = async function () {
 
     const lastWorkingDay = getLastWorkingDay(now);
 
-    const isSameDay = now.getDate() === lastWorkingDay.getDate() &&
-                      now.getMonth() === lastWorkingDay.getMonth() &&
-                      now.getFullYear() === lastWorkingDay.getFullYear();
+    const isSameDay =
+        now.getDate() === lastWorkingDay.getDate() &&
+        now.getMonth() === lastWorkingDay.getMonth() &&
+        now.getFullYear() === lastWorkingDay.getFullYear();
 
-    const monthChanged = now.getMonth() !== lastRenewed.getMonth() || now.getFullYear() !== lastRenewed.getFullYear();
+    const monthChanged =
+        now.getMonth() !== lastRenewed.getMonth() ||
+        now.getFullYear() !== lastRenewed.getFullYear();
 
     if (isSameDay && monthChanged) {
         this.totals.totalIncome += this.initialIncome;
+        this.transactions.push({
+            amount: this.initialIncome,
+            date: now,
+            type: "income"
+        });
         this.lastIncomeRenewedAt = now;
-        this.recalculateTotals();
         await this.save();
         console.log(`Income renewed for user: ${this.email} on last working day.`);
     }
 };
 
+// Pre-save Hook
 userSchema.pre("save", function (next) {
-    this.recalculateTotals();
+    this.recalculateTotals(); // this does not touch totalIncome
     next();
 });
 
-const User = mongoose.model('Users', userSchema);
+const User = mongoose.model("Users", userSchema);
 module.exports = User;
